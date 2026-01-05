@@ -1,53 +1,43 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Interação em A-Frame</title>
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-    
     <script>
-      AFRAME.registerComponent('mudar-cor-ao-clicar', {
+      AFRAME.registerComponent('clique-mudacor', {
         init: function () {
-          // 'this.el' refere-se ao elemento (a caixa) onde este componente está
-          var elemento = this.el;
+          var el = this.el;
+          // O evento 'click' funciona tanto para rato como para fusão (olhar fixo)
+          el.addEventListener('click', function () {
+            el.setAttribute('material', 'color', '#'+(Math.random()*0xFFFFFF<<0).toString(16));
+          });
           
-          // Adiciona um "ouvinte" para o evento de clique
-          elemento.addEventListener('click', function () {
-            
-            // Gera uma cor aleatória hexadecimal
-            var cores = ['#EF2D5E', '#4CC3D9', '#FFC65D', '#7BC8A4', '#333333'];
-            var corAleatoria = cores[Math.floor(Math.random() * cores.length)];
-            
-            // Atualiza o atributo de cor
-            elemento.setAttribute('material', 'color', corAleatoria);
-            
-            // Opcional: Animação simples de escala para dar feedback
-            elemento.setAttribute('animation', 'property: scale; to: 1.2 1.2 1.2; dur: 100; easing: linear; loop: 2; dir: alternate');
+          // Feedback visual quando a mira passa por cima
+          el.addEventListener('mouseenter', function () {
+            el.setAttribute('scale', '1.2 1.2 1.2');
+          });
+          el.addEventListener('mouseleave', function () {
+            el.setAttribute('scale', '1 1 1');
           });
         }
       });
     </script>
   </head>
   <body>
-    <a-scene cursor="rayOrigin: mouse"> <a-camera>
+    <a-scene>
+      
+      <a-camera>
         <a-cursor 
-          color="black" 
-          scale="1.5 1.5 1.5"
-          fuse="false"> </a-cursor>
+          fuse="true" 
+          fuse-timeout="1500"
+          color="yellow" 
+          scale="2 2 2"
+          animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 2 2 2; to: 0.1 0.1 0.1">
+        </a-cursor>
       </a-camera>
 
-      <a-box 
-        position="0 1.5 -3" 
-        color="#EF2D5E" 
-        mudar-cor-ao-clicar
-        animation__mouseenter="property: scale; to: 1.1 1.1 1.1; dur: 200; startEvents: mouseenter"
-        animation__mouseleave="property: scale; to: 1 1 1; dur: 200; startEvents: mouseleave">
-      </a-box>
-
-      <a-text value="Clique na caixa!" position="0 2.5 -3" align="center" color="#000"></a-text>
-
-      <a-plane position="0 0 -4" rotation="-90 0 0" width="10" height="10" color="#ECECEC"></a-plane>
-      <a-sky color="#DCDCDC"></a-sky>
+      <a-box position="0 1.5 -3" color="red" clique-mudacor></a-box>
       
+      <a-sky color="#ECECEC"></a-sky>
     </a-scene>
   </body>
 </html>
