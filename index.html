@@ -2,42 +2,26 @@
 <html>
   <head>
     <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
-    <script>
-      AFRAME.registerComponent('clique-mudacor', {
-        init: function () {
-          var el = this.el;
-          // O evento 'click' funciona tanto para rato como para fusão (olhar fixo)
-          el.addEventListener('click', function () {
-            el.setAttribute('material', 'color', '#'+(Math.random()*0xFFFFFF<<0).toString(16));
-          });
-          
-          // Feedback visual quando a mira passa por cima
-          el.addEventListener('mouseenter', function () {
-            el.setAttribute('scale', '1.2 1.2 1.2');
-          });
-          el.addEventListener('mouseleave', function () {
-            el.setAttribute('scale', '1 1 1');
-          });
-        }
-      });
-    </script>
   </head>
   <body>
     <a-scene>
-      
-      <a-camera>
-        <a-cursor 
-          fuse="true" 
-          fuse-timeout="1500"
-          color="yellow" 
-          scale="2 2 2"
-          animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 2 2 2; to: 0.1 0.1 0.1">
-        </a-cursor>
-      </a-camera>
+      <a-camera position="0 1.6 4"></a-camera>
 
-      <a-box position="0 1.5 -3" color="red" clique-mudacor></a-box>
-      
-      <a-sky color="#ECECEC"></a-sky>
+      <a-sphere position="0 1.5 -5" radius="1.5" color="#FDB813"></a-sphere>
+
+      <a-entity position="0 1.5 -5"
+                animation="property: rotation; to: 0 360 0; loop: true; dur: 10000; easing: linear">
+        
+        <a-sphere position="3 0 0" radius="0.5" color="#2233AA"
+                  animation="property: rotation; to: 0 360 0; loop: true; dur: 2000; easing: linear">
+          
+          <a-sphere position="1 0 0" radius="0.2" color="#CCCCCC"></a-sphere>
+        
+        </a-sphere>
+      </a-entity>
+
+      <a-sky color="#000000"></a-sky>
     </a-scene>
   </body>
 </html>
+
