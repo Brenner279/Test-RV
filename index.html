@@ -8,29 +8,90 @@
   <script>
     /* --- LÓGICA DO SISTEMA --- */
     
-    // Banco de Dados (Mesmo formato que funcionava)
+    // Banco de Dados
     const db = {
       'vitoria': {
         nome: 'Vitória do Jari',
         conteudos: {
-          'historia': { t: 'VIDEO DA CIDADE', txt: 'Olhe para o PLAY', video: './assets/videos/vitoria.mp4', tipo: 'video' },
-          'culinaria': { t: 'HINO MUNICIPAL', txt: 'Olhe para o PLAY', narra: './assets/audios/vitoria.mp3', tipo: 'audio' },
-          'mapa': { t: 'BANDEIRA', txt: 'Visualizando bandeira', imagemPainel: './assets/imagens/vitoria.png', tipo: 'imagem' }
+          'historia': { 
+            t: 'VIDEO DA CIDADE', 
+            txt: 'Olhe para o PLAY', 
+            video: './assets/videos/vitoria.mp4', 
+            tipo: 'video' 
+          },
+          'culinaria': { 
+            t: 'HINO MUNICIPAL', 
+            txt: 'Olhe para o PLAY', 
+            narra: './assets/audios/vitoria.mp3', 
+            tipo: 'audio' 
+          },
+          'mapa': { 
+            t: 'BANDEIRA', 
+            txt: 'Visualizando bandeira', 
+            imagemPainel: './assets/imagens/vitoria.png', 
+            tipo: 'imagem' 
+          }
         }
       },
-      'macapa': { nome: 'Macapá', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
-      'santana': { nome: 'Santana', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
-      'amapa': { nome: 'Amapá', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
-      'mazagao': { nome: 'Mazagão', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
-      'oiapoque': { nome: 'Oiapoque', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
-      // ... Adicione as outras cidades aqui ...
+      'macapa': { 
+        nome: 'Macapá', 
+        conteudos: { 
+          'historia': {
+            t: 'EM BREVE', 
+            txt: 'Conteúdo em desenvolvimento',
+            tipo: 'texto'
+          } 
+        } 
+      },
+      'santana': { 
+        nome: 'Santana', 
+        conteudos: { 
+          'historia': {
+            t: 'EM BREVE', 
+            txt: 'Conteúdo em desenvolvimento',
+            tipo: 'texto'
+          } 
+        } 
+      },
+      'amapa': { 
+        nome: 'Amapá', 
+        conteudos: { 
+          'historia': {
+            t: 'EM BREVE', 
+            txt: 'Conteúdo em desenvolvimento',
+            tipo: 'texto'
+          } 
+        } 
+      },
+      'mazagao': { 
+        nome: 'Mazagão', 
+        conteudos: { 
+          'historia': {
+            t: 'EM BREVE', 
+            txt: 'Conteúdo em desenvolvimento',
+            tipo: 'texto'
+          } 
+        } 
+      },
+      'oiapoque': { 
+        nome: 'Oiapoque', 
+        conteudos: { 
+          'historia': {
+            t: 'EM BREVE', 
+            txt: 'Conteúdo em desenvolvimento',
+            tipo: 'texto'
+          } 
+        } 
+      }
     };
 
     let cidadeAtual = '';
-    let audioNarracao = null; // Para MP3
+    let audioNarracao = null;
+    let tipoMidiaAtual = ''; // 'video', 'audio' ou 'imagem'
 
     // --- INICIALIZAÇÃO ---
     window.onload = function() {
+      console.log('Sistema VR inicializado');
       gerarMenuCidades();
     };
 
@@ -39,20 +100,19 @@
       const container = document.getElementById('grade-cidades');
       const chaves = Object.keys(db);
       
-      let col = 0; let row = 0;
-      const chavesPorLinha = 3; // 3 cidades por linha
+      let col = 0; 
+      let row = 0;
+      const chavesPorLinha = 3;
 
       chaves.forEach((chave) => {
         const cidade = db[chave];
         
-        // Posição na grade
-        const x = (col * 1.1) - 1.1; // Centralizado horizontalmente
-        const y = 1.5 - (row * 0.6); // Começa em cima e desce
+        const x = (col * 1.1) - 1.1;
+        const y = 1.5 - (row * 0.6);
         
         const el = document.createElement('a-entity');
         el.setAttribute('position', `${x} ${y} 0`);
         
-        // Botão da Cidade
         el.innerHTML = `
           <a-plane 
             color="#FFD700" 
@@ -67,31 +127,29 @@
         container.appendChild(el);
 
         col++;
-        if (col >= chavesPorLinha) { col = 0; row++; }
+        if (col >= chavesPorLinha) { 
+          col = 0; 
+          row++; 
+        }
       });
     }
 
-    // --- SISTEMA DE NAVEGAÇÃO (Troca de Telas 3D) ---
+    // --- SISTEMA DE NAVEGAÇÃO ---
     function irPara(idGrupo) {
-      // 1. Esconde TUDO e remove interação
       const grupos = ['grupo-inicio', 'grupo-cidades', 'grupo-categorias', 'grupo-player'];
       
       grupos.forEach(g => {
         const el = document.getElementById(g);
         el.setAttribute('visible', 'false');
-        // Pega todos os itens interativos deste grupo e remove a classe 'clickable'
-        // para o raio não pegar botão invisível
         const botoes = el.querySelectorAll('.interativo');
         botoes.forEach(b => b.classList.remove('clickable'));
       });
 
-      // 2. Mostra SÓ o destino e ativa interação
       const destino = document.getElementById(idGrupo);
       destino.setAttribute('visible', 'true');
       const botoesAtivos = destino.querySelectorAll('.interativo');
       botoesAtivos.forEach(b => b.classList.add('clickable'));
 
-      // Se saiu do player, para a mídia
       if(idGrupo !== 'grupo-player') {
         pararTudo();
       }
@@ -103,134 +161,241 @@
       irPara('grupo-categorias');
     }
 
-      // Modifique as seguintes funções:
+    // --- LÓGICA DE MÍDIA ---
+    function verConteudo(tipo) {
+      if(!db[cidadeAtual] || !db[cidadeAtual].conteudos[tipo]) {
+        console.error('Conteúdo não encontrado:', cidadeAtual, tipo);
+        return;
+      }
 
-function verConteudo(tipo) {
-  if(!db[cidadeAtual].conteudos[tipo]) return;
+      const dados = db[cidadeAtual].conteudos[tipo];
+      console.log('Carregando conteúdo:', dados);
+      
+      const videoEl = document.getElementById('video-player');
+      const telaVideo = document.getElementById('vr-video-screen');
+      const imgPainel = document.getElementById('vr-imagem-screen');
+      const controles = document.getElementById('controles-media');
+      const titulo = document.getElementById('vr-titulo');
+      const texto = document.getElementById('vr-texto');
 
-  const dados = db[cidadeAtual].conteudos[tipo];
-  
-  // Referências aos elementos da cena
-  const videoEl = document.getElementById('video-player');
-  const telaVideo = document.getElementById('vr-video-screen');
-  const imgPainel = document.getElementById('vr-imagem-screen');
-  const controles = document.getElementById('controles-media');
-  const titulo = document.getElementById('vr-titulo');
-  const texto = document.getElementById('vr-texto');
+      telaVideo.setAttribute('visible', 'false');
+      imgPainel.setAttribute('visible', 'false');
+      controles.setAttribute('visible', 'false');
+      
+      titulo.setAttribute('value', dados.t);
+      texto.setAttribute('value', dados.txt || '');
 
-  // Reset
-  telaVideo.setAttribute('visible', 'false');
-  imgPainel.setAttribute('visible', 'false');
-  controles.setAttribute('visible', 'false');
-  
-  titulo.setAttribute('value', dados.t);
-  texto.setAttribute('value', dados.txt || '');
+      pararTudo();
 
-  // Para qualquer mídia anterior
-  pararTudo();
+      // É VIDEO?
+      if (dados.tipo === 'video' && dados.video) {
+        tipoMidiaAtual = 'video';
+        
+        console.log('Carregando vídeo:', dados.video);
+        
+        videoEl.setAttribute('src', dados.video);
+        videoEl.load();
+        
+        // Configura eventos para debug
+        videoEl.onerror = function(e) {
+          console.error('Erro ao carregar vídeo:', e);
+          texto.setAttribute('value', 'Erro: Vídeo não encontrado ou formato incompatível');
+        };
+        
+        videoEl.onloadeddata = function() {
+          console.log('Vídeo carregado com sucesso');
+          texto.setAttribute('value', dados.txt);
+        };
+        
+        videoEl.oncanplay = function() {
+          console.log('Vídeo pronto para reprodução');
+        };
+        
+        telaVideo.setAttribute('visible', 'true');
+        controles.setAttribute('visible', 'true');
+        
+        document.getElementById('btn-play-cor').setAttribute('color', 'green');
+        document.getElementById('btn-play-txt').setAttribute('value', 'PLAY');
+      }
+      // É AUDIO?
+      else if (dados.tipo === 'audio' && dados.narra) {
+        tipoMidiaAtual = 'audio';
+        
+        console.log('Carregando áudio:', dados.narra);
+        audioNarracao = new Audio(dados.narra);
+        
+        audioNarracao.onerror = function(e) {
+          console.error('Erro ao carregar áudio:', e);
+          texto.setAttribute('value', 'Erro: Áudio não encontrado');
+        };
+        
+        audioNarracao.oncanplay = function() {
+          console.log('Áudio pronto para reprodução');
+        };
+        
+        controles.setAttribute('visible', 'true');
+        
+        document.getElementById('btn-play-cor').setAttribute('color', 'green');
+        document.getElementById('btn-play-txt').setAttribute('value', 'PLAY');
+      }
+      // É IMAGEM?
+      else if (dados.tipo === 'imagem' && dados.imagemPainel) {
+        tipoMidiaAtual = 'imagem';
+        
+        console.log('Carregando imagem:', dados.imagemPainel);
+        imgPainel.setAttribute('src', dados.imagemPainel);
+        
+        imgPainel.onerror = function() {
+          console.error('Erro ao carregar imagem');
+          texto.setAttribute('value', 'Erro: Imagem não encontrada');
+        };
+        
+        imgPainel.onload = function() {
+          console.log('Imagem carregada com sucesso');
+        };
+        
+        imgPainel.setAttribute('visible', 'true');
+      }
+      // É APENAS TEXTO
+      else if (dados.tipo === 'texto') {
+        tipoMidiaAtual = 'texto';
+        controles.setAttribute('visible', 'false');
+      }
 
-  // 1. É VIDEO?
-  if (dados.tipo === 'video' && dados.video) {
-     // Verifique se o arquivo existe
-     console.log("Tentando carregar vídeo:", dados.video);
-     
-     // Carrega o vídeo
-     videoEl.setAttribute('src', dados.video);
-     videoEl.load(); // Força o carregamento
-     
-     telaVideo.setAttribute('visible', 'true');
-     controles.setAttribute('visible', 'true');
-     
-     // Botão Play Verde e Texto "PLAY"
-     document.getElementById('btn-play-cor').setAttribute('color', 'green');
-     document.getElementById('btn-play-txt').setAttribute('value', 'PLAY');
-     
-     // Adiciona evento de erro para debug
-     videoEl.onerror = function() {
-       console.error("Erro ao carregar vídeo:", dados.video);
-       texto.setAttribute('value', 'Erro: Vídeo não encontrado');
-     };
-     
-     videoEl.onloadeddata = function() {
-       console.log("Vídeo carregado com sucesso");
-     };
-  }
-  // 2. É AUDIO?
-  else if (dados.tipo === 'audio' && dados.narra) {
-     audioNarracao = new Audio(dados.narra);
-     controles.setAttribute('visible', 'true');
-     
-     document.getElementById('btn-play-cor').setAttribute('color', 'green');
-     document.getElementById('btn-play-txt').setAttribute('value', 'PLAY');
-  }
-  // 3. É IMAGEM?
-  else if (dados.tipo === 'imagem' && dados.imagemPainel) {
-     imgPainel.setAttribute('src', dados.imagemPainel);
-     imgPainel.setAttribute('visible', 'true');
-  }
-
-  irPara('grupo-player');
-}
-
-function togglePlay() {
-  const videoEl = document.getElementById('video-player');
-  const btnCor = document.getElementById('btn-play-cor');
-  const btnTxt = document.getElementById('btn-play-txt');
-
-  // Primeiro, verifica se é vídeo
-  if (videoEl.hasAttribute('src') && videoEl.src) {
-    if (videoEl.paused) {
-      videoEl.play()
-        .then(() => {
-          btnCor.setAttribute('color', 'red');
-          btnTxt.setAttribute('value', 'PAUSE');
-        })
-        .catch(error => {
-          console.error("Erro ao reproduzir vídeo:", error);
-          btnTxt.setAttribute('value', 'ERRO');
-          // Mostra mensagem de erro no texto
-          document.getElementById('vr-texto').setAttribute('value', 'Clique em PLAY novamente');
-        });
-    } else {
-      videoEl.pause();
-      btnCor.setAttribute('color', 'green');
-      btnTxt.setAttribute('value', 'PLAY');
+      irPara('grupo-player');
     }
-  }
-  // Se não for vídeo, verifica se é áudio
-  else if (audioNarracao) {
-    if (audioNarracao.paused) {
-      audioNarracao.play()
-        .then(() => {
-          btnCor.setAttribute('color', 'red');
-          btnTxt.setAttribute('value', 'PAUSE');
-        })
-        .catch(error => {
-          console.error("Erro ao reproduzir áudio:", error);
-        });
-    } else {
-      audioNarracao.pause();
-      btnCor.setAttribute('color', 'green');
-      btnTxt.setAttribute('value', 'PLAY');
-    }
-  }
-}
 
-function pararTudo() {
-  const v = document.getElementById('video-player');
-  if (v) {
-    v.pause();
-    v.currentTime = 0; // Apenas volta ao início, não remove o src
-    // NÃO REMOVA O ATRIBUTO SRC: v.removeAttribute('src');
-  }
-  
-  if(audioNarracao) {
-    audioNarracao.pause();
-    audioNarracao.currentTime = 0;
-    audioNarracao = null;
-  }
-}
-  
+    function togglePlay() {
+      const videoEl = document.getElementById('video-player');
+      const btnCor = document.getElementById('btn-play-cor');
+      const btnTxt = document.getElementById('btn-play-txt');
+      const texto = document.getElementById('vr-texto');
+
+      console.log('togglePlay chamado, tipoMidiaAtual:', tipoMidiaAtual);
+
+      // Controle de VÍDEO
+      if (tipoMidiaAtual === 'video') {
+        if (videoEl.src) {
+          if (videoEl.paused) {
+            console.log('Tentando reproduzir vídeo');
+            videoEl.play()
+              .then(() => {
+                console.log('Vídeo em reprodução');
+                btnCor.setAttribute('color', 'red');
+                btnTxt.setAttribute('value', 'PAUSE');
+                texto.setAttribute('value', 'Vídeo em reprodução');
+              })
+              .catch(error => {
+                console.error('Erro na reprodução do vídeo:', error);
+                btnTxt.setAttribute('value', 'ERRO');
+                texto.setAttribute('value', 'Clique em PLAY novamente. Problema com reprodução automática.');
+                
+                // Tenta novamente após interação do usuário
+                videoEl.play()
+                  .then(() => {
+                    btnCor.setAttribute('color', 'red');
+                    btnTxt.setAttribute('value', 'PAUSE');
+                    texto.setAttribute('value', 'Vídeo em reprodução');
+                  })
+                  .catch(e => {
+                    console.error('Segunda tentativa falhou:', e);
+                    texto.setAttribute('value', 'Erro: Não foi possível reproduzir o vídeo');
+                  });
+              });
+          } else {
+            videoEl.pause();
+            btnCor.setAttribute('color', 'green');
+            btnTxt.setAttribute('value', 'PLAY');
+            texto.setAttribute('value', 'Vídeo pausado');
+          }
+        } else {
+          console.error('Vídeo sem source');
+          texto.setAttribute('value', 'Erro: Vídeo não carregado');
+        }
+      }
+      // Controle de ÁUDIO
+      else if (tipoMidiaAtual === 'audio' && audioNarracao) {
+        if (audioNarracao.paused) {
+          console.log('Tentando reproduzir áudio');
+          audioNarracao.play()
+            .then(() => {
+              btnCor.setAttribute('color', 'red');
+              btnTxt.setAttribute('value', 'PAUSE');
+              texto.setAttribute('value', 'Áudio em reprodução');
+            })
+            .catch(error => {
+              console.error('Erro na reprodução do áudio:', error);
+              btnTxt.setAttribute('value', 'ERRO');
+              texto.setAttribute('value', 'Clique em PLAY novamente');
+            });
+        } else {
+          audioNarracao.pause();
+          btnCor.setAttribute('color', 'green');
+          btnTxt.setAttribute('value', 'PLAY');
+          texto.setAttribute('value', 'Áudio pausado');
+        }
+      }
+    }
+
+    function restartMedia() {
+      const videoEl = document.getElementById('video-player');
+      const texto = document.getElementById('vr-texto');
+      
+      console.log('Reiniciando mídia, tipo:', tipoMidiaAtual);
+
+      if (tipoMidiaAtual === 'video' && videoEl.src) {
+        videoEl.currentTime = 0;
+        videoEl.play()
+          .then(() => {
+            document.getElementById('btn-play-cor').setAttribute('color', 'red');
+            document.getElementById('btn-play-txt').setAttribute('value', 'PAUSE');
+            texto.setAttribute('value', 'Vídeo reiniciado');
+          })
+          .catch(error => {
+            console.error('Erro ao reiniciar vídeo:', error);
+            texto.setAttribute('value', 'Erro ao reiniciar vídeo');
+          });
+      }
+      else if (tipoMidiaAtual === 'audio' && audioNarracao) {
+        audioNarracao.currentTime = 0;
+        audioNarracao.play()
+          .then(() => {
+            document.getElementById('btn-play-cor').setAttribute('color', 'red');
+            document.getElementById('btn-play-txt').setAttribute('value', 'PAUSE');
+            texto.setAttribute('value', 'Áudio reiniciado');
+          })
+          .catch(error => {
+            console.error('Erro ao reiniciar áudio:', error);
+          });
+      }
+    }
+
+    function pararTudo() {
+      console.log('Parando toda mídia');
+      
+      const videoEl = document.getElementById('video-player');
+      if (videoEl) {
+        videoEl.pause();
+        videoEl.currentTime = 0;
+        // NÃO REMOVER O ATRIBUTO SRC
+      }
+      
+      if (audioNarracao) {
+        audioNarracao.pause();
+        audioNarracao.currentTime = 0;
+        audioNarracao = null;
+      }
+      
+      tipoMidiaAtual = '';
+    }
+
+    // Função auxiliar para testar com vídeo online
+    function testarComVideoOnline() {
+      // Para testar rapidamente, você pode trocar o caminho do vídeo
+      // db.vitoria.conteudos.historia.video = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+      console.log('Função de teste disponível');
+    }
+
   </script>
 </head>
 <body>
@@ -333,6 +498,10 @@ function pararTudo() {
     </a-entity>
 
   </a-scene>
+  
+  <script>
+    // Para testes rápidos, você pode descomentar a linha abaixo para usar um vídeo online
+    // db.vitoria.conteudos.historia.video = 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+  </script>
 </body>
 </html>
-
