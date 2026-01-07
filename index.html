@@ -1,21 +1,12 @@
 <html>
   <head>
-    <title>Template VR</title>
-<script src="https://aframe.io/releases/8.9.2/aframe.min.js"></script>
-<script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js"></script>
-
-</head>
-<body>
+    <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-environment-component@1.5.x/dist/aframe-environment-component.min.js"></script>
+  </head>
+  <body>
     <a-scene>
-    <a-assets>
-    <video id="video" autoplay src="https://github.com/Brenner279/Test-RV/blob/main/assets/videos/vitoria.mp4"></video>
-    </a-assets>
-<a-camera position="0 1.6 0">
-<a-cursor  color="red"></a-cursor>
-</a-camera>
-<a-video src="#video" positions="0 1.6 -2" width="1" height="1"></a-video>
-
-<a-entity environment="preset: default; groundColor: #445; grid: cross"></a-entity> 
-</a-scene>
+<a-entity environment="preset: forest; groundColor: #445; grid: cross"></a-entity>
+    </a-scene>
 </body>
 </html>
+
