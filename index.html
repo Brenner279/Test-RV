@@ -163,12 +163,12 @@
       if (videoEl && !videoEl.paused) {
         videoEl.pause();
         estadoPlay = false;
-        btnTexto.setAttribute('value', 'PLAY');
+        btnTxt.setAttribute('value', 'PLAY');
         btnCor.setAttribute('color', 'green');
       } else if (videoEl && videoEl.paused && videoEl.getAttribute('src')) {
         videoEl.play();
         estadoPlay = true;
-        btnTexto.setAttribute('value', 'PAUSE');
+        btnTxt.setAttribute('value', 'PAUSE');
         btnCor.setAttribute('color', 'red');
       }
       // Lógica Áudio
@@ -320,6 +320,7 @@
   </a-scene>
 </body>
 </html>
+
 
 
 
