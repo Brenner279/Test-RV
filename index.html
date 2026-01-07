@@ -125,15 +125,16 @@
       texto.setAttribute('value', dados.txt || '');
 
       // 1. É VIDEO?
-      if (dados.tipo === 'video' && dados.video) {
-         videoEl.setAttribute('src', dados.video);
-         telaVideo.setAttribute('visible', 'true');
-         controles.setAttribute('visible', 'true');
-         
-         // Botão Play Verde e Texto "PLAY"
-         document.getElementById('btn-play-cor').setAttribute('color', 'green');
-         document.getElementById('btn-play-txt').setAttribute('value', 'PLAY');
-      }
+
+if (dados.video && dados.video.length > 5) {
+           videoEl.setAttribute('src', dados.video);
+           telaVideo.setAttribute('visible', 'true');
+           controles.setAttribute('visible', 'true');
+           document.getElementById('vr-texto').setAttribute('visible', 'false');
+           // Inicia pausado para o usuário dar play
+           document.getElementById('txt-btn-play').setAttribute('value', 'PLAY');
+           document.getElementById('btn-play').setAttribute('color', 'green');
+         }
       // 2. É AUDIO?
       else if (dados.tipo === 'audio' && dados.narra) {
          audioNarracao = new Audio(dados.narra);
@@ -157,18 +158,18 @@
       const btnTxt = document.getElementById('btn-play-txt');
 
       // Lógica Vídeo
-      if (videoEl.getAttribute('src')) {
-        if (videoEl.paused) {
-          videoEl.play();
-          btnCor.setAttribute('color', 'red');
-          btnTxt.setAttribute('value', 'PAUSE');
-        } else {
-          videoEl.pause();
-          btnCor.setAttribute('color', 'green');
-          btnTxt.setAttribute('value', 'PLAY');
-        }
-      }
       
+      if (videoEl && !videoEl.paused) {
+        videoEl.pause();
+        estadoPlay = false;
+        btnTexto.setAttribute('value', 'PLAY');
+        btnCor.setAttribute('color', 'green');
+      } else if (videoEl && videoEl.paused && videoEl.getAttribute('src')) {
+        videoEl.play();
+        estadoPlay = true;
+        btnTexto.setAttribute('value', 'PAUSE');
+        btnCor.setAttribute('color', 'red');
+      }
       // Lógica Áudio
       if (audioNarracao) {
         if (audioNarracao.paused) {
@@ -183,18 +184,24 @@
       }
     }
 
-    function restartMedia() {
+    function restartMedia() 
+    {
       const videoEl = document.getElementById('video-player');
-      if (videoEl.getAttribute('src')) {
+      
+      // Reinicia Vídeo
+      if (videoEl && videoEl.getAttribute('src')) {
         videoEl.currentTime = 0;
         videoEl.play();
       }
+      // Reinicia Áudio
       if (audioNarracao) {
         audioNarracao.currentTime = 0;
         audioNarracao.play();
       }
-      document.getElementById('btn-play-cor').setAttribute('color', 'red');
-      document.getElementById('btn-play-txt').setAttribute('value', 'PAUSE');
+      
+      // Atualiza botões visualmente
+      document.getElementById('txt-btn-play').setAttribute('value', 'PAUSE');
+      document.getElementById('btn-play').setAttribute('color', 'red');
     }
 
     function pararTudo() {
@@ -312,5 +319,6 @@
   </a-scene>
 </body>
 </html>
+
 
 
