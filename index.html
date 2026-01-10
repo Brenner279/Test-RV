@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Amapá Interativo: Explore, interaja e aprenda sobre cada município</title>
+  <title>Amapa Interativo: Explore, interaja e aprenda sobre cada municipio</title>
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   <script src="https://unpkg.com/aframe-environment-component@1.5.x/dist/aframe-environment-component.min.js"></script>
   <script>
@@ -10,18 +10,19 @@
    
     const db = {
       'vitoria': {
-        nome: 'Vitória do Jari',
+        nome: 'Vitoria do Jari',
         conteudos: {
-          'historia': { t: 'VIDEO DA CIDADE', txt: 'Olhe para o PLAY', video: './assets/videos/vitoria.mp4', tipo: 'video' },
-          'culinaria': { t: 'HINO MUNICIPAL', txt: 'Olhe para o PLAY', narra: './assets/audios/vitoria.mp3', tipo: 'audio' },
-          'mapa': { t: 'BANDEIRA', txt: 'Visualizando bandeira', imagemPainel: './assets/imagens/vitoria.png', tipo: 'imagem' }
+          'Historia': { t: 'VIDEO DA CIDADE', txt: 'Olhe para o PLAY', video: './assets/videos/vitoria.mp4', tipo: 'video' },
+          'Cultura': { t: 'HINO MUNICIPAL', txt: 'Olhe para o PLAY', narra: './assets/audios/vitoria.mp3', tipo: 'audio' },
+          'Turismo': { t: 'BANDEIRA', txt: 'Visualizando bandeira', imagemPainel: './assets/imagens/vitoria.png', tipo: 'imagem' }
         }
       },
-      'macapa': { nome: 'Macapá', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
-      'santana': { nome: 'Santana', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
-      'amapa': { nome: 'Amapá', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
-      'mazagao': { nome: 'Mazagão', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
+      'macapa': { nome: 'Macapa', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
+      'laranjal do jari': { nome: 'Laranjal do Jari', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
       'oiapoque': { nome: 'Oiapoque', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
+      'serra do navio': { nome: 'Serra do Navio', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
+      'santana': { nome: 'Santana', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
+      'amapa': { nome: 'Amapa', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
     };
 
     let cidadeAtual = '';
@@ -302,4 +303,5 @@
   </a-scene>
 </body>
 </html>
+
 
