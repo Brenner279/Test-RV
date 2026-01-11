@@ -12,9 +12,9 @@
       'vitoria': {
         nome: 'Vitoria do Jari',
         conteudos: {
-          'Historia': { t: 'VIDEO DA CIDADE', txt: 'Olhe para o PLAY', video: './assets/videos/vitoria.mp4', tipo: 'video' },
-          'Cultura': { t: 'HINO MUNICIPAL', txt: 'Olhe para o PLAY', narra: './assets/audios/vitoria.mp3', tipo: 'audio' },
-          'Turismo': { t: 'BANDEIRA', txt: 'Visualizando bandeira', imagemPainel: './assets/imagens/vitoria.png', tipo: 'imagem' }
+          'Historia': { t: 'Historia', txt: 'Olhe para o PLAY', video: './assets/videos/vitoria.mp4', tipo: 'video' },
+          'Cultura': { t: 'Cultura', txt: 'Olhe para o PLAY', narra: './assets/audios/vitoria.mp3', tipo: 'audio' },
+          'Turismo': { t: 'Turismo', txt: 'Visualizando turismo', imagemPainel: './assets/imagens/vitoria.png', tipo: 'imagem' }
         }
       },
       'macapa': { nome: 'Macapa', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
@@ -198,7 +198,7 @@
 
   <a-scene background="color: #111">
 
-    <a-entity environment="preset: forest; groundColor: #445; grid: cross"></a-entity>
+<a-entity environment="preset: forest; groundColor: #445; grid: cross"></a-entity>
     
     <a-assets>
        <video id="video-player" loop="true" crossorigin="anonymous" playsinline webkit-playsinline></video>
@@ -218,58 +218,57 @@
     </a-camera>
 
     <a-entity id="grupo-inicio" visible="true">
-        <a-text value="Amapá Interativo" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 2.3 -3" width="10" color="#FFD700"></a-text>
-        <a-text value="Explore, interaja e aprenda sobre cada município" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 1.9 -3" width="5"></a-text>
-        
-        <a-plane position="0 1.2 -3" width="1.5" height="0.6" color="#004d40" class="clickable interativo" onclick="irPara('grupo-cidades')">
+        <a-text value="Amapa Interativo" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 3 -3" width="10" color="#000000"></a-text>
+        <a-text value="Explore, interaja e aprenda sobre cada municipio" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" color="#000000" align="center" position="0 2.5 -3" width="5"></a-text>       
+        <a-plane position="0 1.7 -3" width="1.5" height="0.6" color="#004d40" class="clickable interativo" onclick="irPara('grupo-cidades')">
             <a-text value="INICIAR" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" width="6"></a-text>
         </a-plane>
     </a-entity>
 
     <a-entity id="grupo-cidades" visible="false">
-        <a-text value="ESCOLHA O DESTINO" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 2.5 -3" width="8" color="#FFD700"></a-text>
+        <a-text value="ESCOLHA O DESTINO" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 3.5 -3" width="8" color="#FFD700"></a-text>
         
-        <a-entity id="grade-cidades" position="0 1.0 -3"></a-entity>
+        <a-entity id="grade-cidades" position="0 2 -3"></a-entity>
 
-        <a-plane position="0 0.5 -3" width="1" height="0.4" color="#444" class="interativo" onclick="irPara('grupo-inicio')">
+        <a-plane position="0 1.2 -3" width="1" height="0.4" color="#444" class="interativo" onclick="irPara('grupo-inicio')">
             <a-text value="VOLTAR" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center"></a-text>
         </a-plane>
     </a-entity>
 
     <a-entity id="grupo-categorias" visible="false">
-        <a-text id="titulo-cidade-cat" value="CIDADE" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 2.5 -3" width="10" color="#FFD700"></a-text>
+        <a-text id="titulo-cidade-cat" value="CIDADE" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 3 -3" width="10" color="#FFD700"></a-text>
 
-        <a-plane position="-1.2 1.5 -3" width="1" height="1" color="#004d40" class="interativo" onclick="verConteudo('historia')">
-            <a-text value="VIDEO" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" width="6"></a-text>
+        <a-plane position="-1.2 2 -3" width="1" height="1" color="#004d40" class="interativo" onclick="verConteudo('Historia')">
+            <a-text value="Historia" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" width="6"></a-text>
         </a-plane>
 
-        <a-plane position="0 1.5 -3" width="1" height="1" color="#E64A19" class="interativo" onclick="verConteudo('culinaria')">
-            <a-text value="HINO" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" width="6"></a-text>
+        <a-plane position="0 2 -3" width="1" height="1" color="#E64A19" class="interativo" onclick="verConteudo('Cultura')">
+            <a-text value="Cultura" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" width="6"></a-text>
         </a-plane>
 
-        <a-plane position="1.2 1.5 -3" width="1" height="1" color="#388E3C" class="interativo" onclick="verConteudo('mapa')">
-            <a-text value="BANDEIRA" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" width="6"></a-text>
+        <a-plane position="1.2 2 -3" width="1" height="1" color="#388E3C" class="interativo" onclick="verConteudo('Turismo')">
+            <a-text value="Turismo" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" width="6"></a-text>
         </a-plane>
 
-        <a-plane position="0 0.5 -3" width="1" height="0.3" color="#444" class="interativo" onclick="irPara('grupo-cidades')">
+        <a-plane position="0 1 -3" width="1" height="0.3" color="#444" class="interativo" onclick="irPara('grupo-cidades')">
             <a-text value="VOLTAR" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center"></a-text>
         </a-plane>
     </a-entity>
 
     <a-entity id="grupo-player" visible="false">
         
-        <a-plane position="0 1.6 -3" width="3.5" height="2.5" color="#111" opacity="0.95"></a-plane>
+        <a-plane position="0 3 -3" width="3.5" height="2.5" color="#111" opacity="0.95"></a-plane>
         
-        <a-text id="vr-titulo" value="TITULO" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 2.4 -2.9" color="#FFD700" width="6"></a-text>
+        <a-text id="vr-titulo" value="TITULO" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 4 -2.9" color="#FFD700" width="6"></a-text>
         
-        <a-video id="vr-video-screen" src="#video-player" width="3" height="1.6" position="0 1.6 -2.9" visible="false"></a-video>
+        <a-video id="vr-video-screen" src="#video-player" width="3" height="1.6" position="0 3 -2.9" visible="false"></a-video>
         <a-image id="vr-imagem-screen" width="2" height="1.4" position="0 1.6 -2.85" visible="false"></a-image>
 
-        <a-entity id="controles-media" position="0 0.7 -2.9" visible="false">
+        <a-entity id="controles-media" position="0 1.8 -2.9" visible="false">
             
             <a-entity position="-0.5 0 0">
                <a-circle id="btn-play-cor"
-                 radius="0.25"
+                 radius="0.20"
                  color="green"
                  class="interativo"
                  onclick="togglePlay()"
@@ -303,5 +302,3 @@
   </a-scene>
 </body>
 </html>
-
-
