@@ -204,10 +204,10 @@
        <video id="video-player" loop="true" crossorigin="anonymous" playsinline webkit-playsinline></video>
     </a-assets>
 
-    <a-camera position="0 1.6 0">
+    <a-camera position="0 1.1 0">
         <a-cursor
           id="cursor"
-          color="#FFD700"
+          color="#FF0000"
           fuse="true"
           fuse-timeout="1500"
           geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
@@ -220,13 +220,13 @@
     <a-entity id="grupo-inicio" visible="true">
         <a-text value="Amapa Interativo" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 3 -3" width="10" color="#000000"></a-text>
         <a-text value="Explore, interaja e aprenda sobre cada municipio" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" color="#000000" align="center" position="0 2.5 -3" width="5"></a-text>       
-        <a-plane position="0 1.7 -3" width="1.5" height="0.6" color="#004d40" class="clickable interativo" onclick="irPara('grupo-cidades')">
+        <a-plane position="0 1.6 -3" width="1.5" height="0.6" color="#004d40" class="clickable interativo" onclick="irPara('grupo-cidades')">
             <a-text value="INICIAR" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" width="6"></a-text>
         </a-plane>
     </a-entity>
 
     <a-entity id="grupo-cidades" visible="false">
-        <a-text value="ESCOLHA O DESTINO" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 3.5 -3" width="8" color="#FFD700"></a-text>
+        <a-text value="Escolha o destino" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 3.4 -3" width="8" color="#000000"></a-text>
         
         <a-entity id="grade-cidades" position="0 2 -3"></a-entity>
 
@@ -236,35 +236,35 @@
     </a-entity>
 
     <a-entity id="grupo-categorias" visible="false">
-        <a-text id="titulo-cidade-cat" value="CIDADE" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 3 -3" width="10" color="#FFD700"></a-text>
+        <a-text id="titulo-cidade-cat" value="CIDADE" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 3 -3" width="10" color="#000000" ></a-text>
 
-        <a-plane position="-1.2 2 -3" width="1" height="1" color="#004d40" class="interativo" onclick="verConteudo('Historia')">
+        <a-plane position="-1.2 2 -3" width="1.2" height="0.8" color="#004d40" class="interativo" onclick="verConteudo('Historia')">
             <a-text value="Historia" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" width="6"></a-text>
         </a-plane>
 
-        <a-plane position="0 2 -3" width="1" height="1" color="#E64A19" class="interativo" onclick="verConteudo('Cultura')">
+        <a-plane position="0 2 -3" width="1.2" height="0.8" color="#E64A19" class="interativo" onclick="verConteudo('Cultura')">
             <a-text value="Cultura" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" width="6"></a-text>
         </a-plane>
 
-        <a-plane position="1.2 2 -3" width="1" height="1" color="#388E3C" class="interativo" onclick="verConteudo('Turismo')">
+        <a-plane position="1.2 2 -3" width="1.2" height="0.8" color="#388E3C" class="interativo" onclick="verConteudo('Turismo')">
             <a-text value="Turismo" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" width="6"></a-text>
         </a-plane>
 
-        <a-plane position="0 1 -3" width="1" height="0.3" color="#444" class="interativo" onclick="irPara('grupo-cidades')">
+        <a-plane position="1.5 1 -3" width="1" height="0.3" color="#444" class="interativo" onclick="irPara('grupo-cidades')">
             <a-text value="VOLTAR" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center"></a-text>
         </a-plane>
     </a-entity>
 
     <a-entity id="grupo-player" visible="false">
         
-        <a-plane position="0 3 -3" width="3.5" height="2.5" color="#111" opacity="0.95"></a-plane>
+        <a-plane position="0 1.5 -3" width="3" height="2.5" color="#111" opacity="0.95"></a-plane>
         
-        <a-text id="vr-titulo" value="TITULO" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 4 -2.9" color="#FFD700" width="6"></a-text>
+        <a-text id="vr-titulo" value="TITULO" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 2.5 -2.9" color="#FFD700" width="4"></a-text>
         
-        <a-video id="vr-video-screen" src="#video-player" width="3" height="1.6" position="0 3 -2.9" visible="false"></a-video>
-        <a-image id="vr-imagem-screen" width="2" height="1.4" position="0 1.6 -2.85" visible="false"></a-image>
+        <a-video id="vr-video-screen" src="#video-player" width="2" height="1" position="0 1.8 -2.9" visible="false"></a-video>
+        <a-image id="vr-imagem-screen" width="2" height="1" position="0 1.8 -2.9" visible="false"></a-image>
 
-        <a-entity id="controles-media" position="0 1.8 -2.9" visible="false">
+        <a-entity id="controles-media" position="0 1 -2.9" visible="false">
             
             <a-entity position="-0.5 0 0">
                <a-circle id="btn-play-cor"
@@ -272,22 +272,22 @@
                  color="green"
                  class="interativo"
                  onclick="togglePlay()"
-                 animation__sc="property: scale; to: 1.2 1.2 1.2; dur: 200; startEvents: mouseenter"
+                 animation__sc="property: scale; to: 1 1 1; dur: 200; startEvents: mouseenter"
                  animation__out="property: scale; to: 1 1 1; dur: 200; startEvents: mouseleave">
                </a-circle>
-               <a-text id="btn-play-txt" value="PLAY" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 -0.4 0"></a-text>
+               <a-text id="btn-play-txt" value="PLAY" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" width="4" height="2" position="-0.5 0 0"></a-text>
             </a-entity>
 
             <a-entity position="0.5 0 0">
                <a-circle
-                 radius="0.25"
+                 radius="0.20"
                  color="#0055ff"
                  class="interativo"
                  onclick="restartMedia()"
-                 animation__sc="property: scale; to: 1.2 1.2 1.2; dur: 200; startEvents: mouseenter"
+                 animation__sc="property: scale; to: 1 1 1; dur: 200; startEvents: mouseenter"
                  animation__out="property: scale; to: 1 1 1; dur: 200; startEvents: mouseleave">
                </a-circle>
-               <a-text value="RESTART" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 -0.4 0"></a-text>
+               <a-text value="RESTART" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" width="4" height="2" position="0.6 0 0"></a-text>
             </a-entity>
 
         </a-entity>
