@@ -2,29 +2,33 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Amapa Interativo: Historia 360</title>
+  <title>Amapa Interativo: 360 Gaze Control</title>
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
   <script src="https://unpkg.com/aframe-environment-component@1.5.x/dist/aframe-environment-component.min.js"></script>
+  
   <script>
-    /* --- LÓGICA DO SISTEMA --- */
-    
+    /* --- DADOS --- */
     const db = {
       'vitoria': {
         nome: 'Vitoria do Jari',
         conteudos: {
-          // NOTA: Para funcionar perfeito, o video deve ser gravado em 360 (equiretangular)
-          'Historia': { t: 'Historia', txt: '', video: './assets/videos/vitoria_360.mp4', tipo: 'video360' },
+          // Caminho do video 360
+          'Historia': { 
+             t: 'Historia', 
+             video: './assets/videos/vitoria.mp4', 
+             tipo: 'video360' 
+          },
           'Cultura': { t: 'Cultura', txt: 'Olhe para o PLAY', narra: './assets/audios/vitoria.mp3', tipo: 'audio' },
-          'Turismo': { t: 'Turismo', txt: 'Visualizando turismo', imagemPainel: './assets/imagens/vitoria.png', tipo: 'imagem' }
+          'Turismo': { t: 'Turismo', txt: 'Turismo Local', imagemPainel: './assets/imagens/vitoria.png', tipo: 'imagem' }
         }
       },
-      'macapa': { nome: 'Macapa', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
-      // ... (outras cidades mantidas iguais)
-      'laranjal do jari': { nome: 'Laranjal do Jari', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
-      'oiapoque': { nome: 'Oiapoque', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
-      'serra do navio': { nome: 'Serra do Navio', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
-      'santana': { nome: 'Santana', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
-      'amapa': { nome: 'Amapa', conteudos: { 'historia': {t:'EM BREVE', txt:'Indisponivel'} } },
+      // Outras cidades...
+      'macapa': { nome: 'Macapa', conteudos: {} },
+      'laranjal do jari': { nome: 'Laranjal do Jari', conteudos: {} },
+      'oiapoque': { nome: 'Oiapoque', conteudos: {} },
+      'serra do navio': { nome: 'Serra do Navio', conteudos: {} },
+      'santana': { nome: 'Santana', conteudos: {} },
+      'amapa': { nome: 'Amapa', conteudos: {} },
     };
 
     let cidadeAtual = '';
@@ -34,11 +38,11 @@
       gerarMenuCidades();
     };
 
+    /* --- SISTEMA DE MENUS --- */
     function gerarMenuCidades() {
       const container = document.getElementById('grade-cidades');
       const chaves = Object.keys(db);
-      let col = 0; let row = 0;
-      const chavesPorLinha = 3;
+      let col = 0; let row = 0; const chavesPorLinha = 3;
 
       chaves.forEach((chave) => {
         const cidade = db[chave];
@@ -48,7 +52,7 @@
         const el = document.createElement('a-entity');
         el.setAttribute('position', `${x} ${y} 0`);
         el.innerHTML = `
-          <a-plane color="#FFD700" width="1" height="0.4" class="clickable interativo"
+          <a-plane color="#FFD700" width="1" height="0.4" class="interativo"
             onclick="selecionarCidade('${chave}')"
             animation__scale="property: scale; to: 1.1 1.1 1.1; dur: 200; startEvents: mouseenter"
             animation__out="property: scale; to: 1 1 1; dur: 200; startEvents: mouseleave">
@@ -60,41 +64,25 @@
     }
 
     function irPara(idGrupo) {
-      // Oculta grupos normais
+      // 1. Esconde menus padrão
       ['grupo-inicio', 'grupo-cidades', 'grupo-categorias', 'grupo-player'].forEach(g => {
         const el = document.getElementById(g);
         el.setAttribute('visible', 'false');
         el.querySelectorAll('.interativo').forEach(b => b.classList.remove('clickable'));
       });
 
-      // Garante que o modo 360 esteja desligado ao navegar pelos menus normais
+      // 2. Garante que o modo 360 está desligado
       desativarModo360();
 
+      // 3. Mostra destino
       const destino = document.getElementById(idGrupo);
       destino.setAttribute('visible', 'true');
       destino.querySelectorAll('.interativo').forEach(b => b.classList.add('clickable'));
 
-      trocarAmbiente(idGrupo); // Mantém sua lógica de ambientes
+      // 4. Atualiza ambiente
+      atualizarAmbiente(idGrupo);
       
       if(idGrupo !== 'grupo-player') pararTudo();
-    }
-
-    function trocarAmbiente(idGrupo) {
-        const ambienteEl = document.getElementById('ambiente-3d');
-        // Se estivermos vendo video 360, o ambiente deve ficar invisível
-        if(document.getElementById('videosphere').getAttribute('visible') == true) return;
-
-        ambienteEl.setAttribute('visible', 'true');
-        
-        let preset = 'forest';
-        let chao = '#445';
-        switch(idGrupo) {
-            case 'grupo-inicio': preset = 'forest'; break;
-            case 'grupo-cidades': preset = 'arches'; break;
-            case 'grupo-categorias': preset = 'volcano'; break;
-            case 'grupo-player': preset = 'starry'; chao = '#111'; break;
-        }
-        ambienteEl.setAttribute('environment', { preset: preset, groundColor: chao, grid: 'cross', playArea: 1 });
     }
 
     function selecionarCidade(chave) {
@@ -106,127 +94,124 @@
     function verConteudo(tipo) {
       if(!db[cidadeAtual].conteudos[tipo]) return;
       const dados = db[cidadeAtual].conteudos[tipo];
-      
       pararTudo();
 
-      // --- NOVA LÓGICA PARA VIDEO 360 (HISTORIA) ---
+      // >>> LOGICA DO EXEMPLO PARA 360 <<<
       if (dados.tipo === 'video360') {
           ativarModo360(dados.video);
-          return; // Para a função aqui, não executa o resto do player padrão
+          return;
       }
-      
-      // Player Padrão (2D)
+
+      // Player Padrão 2D
       const videoEl = document.getElementById('video-player');
       const telaVideo = document.getElementById('vr-video-screen');
       const imgPainel = document.getElementById('vr-imagem-screen');
       const controles = document.getElementById('controles-media');
-      
+
       telaVideo.setAttribute('visible', 'false');
       imgPainel.setAttribute('visible', 'false');
       controles.setAttribute('visible', 'false');
-      
       document.getElementById('vr-titulo').setAttribute('value', dados.t);
-      document.getElementById('vr-texto').setAttribute('value', dados.txt || '');
-
+      
       if (dados.tipo === 'audio' && dados.narra) {
          audioNarracao = new Audio(dados.narra);
          controles.setAttribute('visible', 'true');
-      }
-      else if (dados.tipo === 'imagem' && dados.imagemPainel) {
+      } else if (dados.tipo === 'imagem') {
          imgPainel.setAttribute('src', dados.imagemPainel);
          imgPainel.setAttribute('visible', 'true');
       }
-
       irPara('grupo-player');
     }
 
-    // --- FUNÇÕES ESPECIFICAS PARA O MODO 360 ---
+    /* --- LÓGICA DO 360 GAZE CONTROL (Adaptado do seu modelo) --- */
 
-    function ativarModo360(srcVideo) {
-        // 1. Esconde tudo que é do menu padrão
-        ['grupo-inicio', 'grupo-cidades', 'grupo-categorias', 'grupo-player'].forEach(g => {
-            document.getElementById(g).setAttribute('visible', 'false');
-            document.getElementById(g).querySelectorAll('.interativo').forEach(b => b.classList.remove('clickable'));
+    function ativarModo360(videoSrc) {
+        // Esconde interface principal
+        ['grupo-inicio', 'grupo-cidades', 'grupo-categorias', 'grupo-player'].forEach(id => {
+            document.getElementById(id).setAttribute('visible', 'false');
+            document.getElementById(id).querySelectorAll('.interativo').forEach(b => b.classList.remove('clickable'));
         });
-
-        // 2. Esconde o ambiente gerado (forest/arches)
         document.getElementById('ambiente-3d').setAttribute('visible', 'false');
 
-        // 3. Prepara o video
+        // Configura video
         const videoEl = document.getElementById('video-player');
-        videoEl.setAttribute('src', srcVideo);
+        videoEl.setAttribute('src', videoSrc);
+
+        // Mostra Esfera e Controles 360
+        document.getElementById('videosphere').setAttribute('visible', 'true');
         
-        // 4. Ativa a esfera 360
-        const videosphere = document.getElementById('videosphere');
-        videosphere.setAttribute('visible', 'true');
+        const controle360 = document.getElementById('controle-360-gaze');
+        controle360.setAttribute('visible', 'true');
+        
+        // Ativa a classe 'clickable' (no seu exemplo era 'clicavel', aqui uso 'clickable' para padronizar com o cursor)
+        const btn = document.getElementById('btnPlay360');
+        const btnVoltar = document.getElementById('btnVoltar360');
+        
+        btn.classList.add('clickable');
+        btnVoltar.classList.add('clickable');
 
-        // 5. Ativa o HUD (controles na cara)
-        const hud = document.getElementById('hud-controles');
-        hud.setAttribute('visible', 'true');
-        hud.querySelectorAll('.interativo').forEach(b => b.classList.add('clickable'));
-
-        // Play automático e ajusta botões
-        videoEl.play();
-        atualizarBotoesHUD(true);
+        // Reseta estado do botão
+        atualizarEstadoBotao360(false); 
     }
 
     function desativarModo360() {
-        const videosphere = document.getElementById('videosphere');
-        const hud = document.getElementById('hud-controles');
-        const ambienteEl = document.getElementById('ambiente-3d');
+        const esfera = document.getElementById('videosphere');
+        if (esfera.getAttribute('visible') == false) return;
 
-        // Pausa video e esconde 360
         pararTudo();
-        videosphere.setAttribute('visible', 'false');
+        esfera.setAttribute('visible', 'false');
         
-        // Esconde HUD
-        hud.setAttribute('visible', 'false');
-        hud.querySelectorAll('.interativo').forEach(b => b.classList.remove('clickable'));
-
-        // Restaura ambiente
-        ambienteEl.setAttribute('visible', 'true');
+        const controle360 = document.getElementById('controle-360-gaze');
+        controle360.setAttribute('visible', 'false');
+        
+        controle360.querySelectorAll('.interativo').forEach(b => b.classList.remove('clickable'));
     }
 
+    // Função disparada pelo FUSE (Gaze)
     function togglePlay360() {
-        const videoEl = document.getElementById('video-player');
-        if (videoEl.paused) {
-            videoEl.play();
-            atualizarBotoesHUD(true);
+        const video = document.getElementById('video-player');
+        
+        if (video.paused) {
+            video.play();
+            atualizarEstadoBotao360(true);
         } else {
-            videoEl.pause();
-            atualizarBotoesHUD(false);
+            video.pause();
+            atualizarEstadoBotao360(false);
         }
     }
 
-    function atualizarBotoesHUD(estaTocando) {
-        const btnPlay = document.getElementById('hud-btn-play');
-        const txtPlay = document.getElementById('hud-txt-play');
-        
-        if(estaTocando) {
-            btnPlay.setAttribute('color', 'red');
-            txtPlay.setAttribute('value', 'PAUSE');
+    function atualizarEstadoBotao360(tocando) {
+        const btn = document.getElementById('btnPlay360');
+        const txt = document.getElementById('btnText360');
+
+        if (tocando) {
+            // Modelo: Muda cor para escura e texto para pausar
+            btn.setAttribute('color', '#333');
+            txt.setAttribute('value', 'OLHE PARA PAUSAR');
         } else {
-            btnPlay.setAttribute('color', 'green');
-            txtPlay.setAttribute('value', 'PLAY');
+            // Modelo: Cor original e texto para tocar
+            btn.setAttribute('color', '#EF2D5E');
+            txt.setAttribute('value', 'OLHE PARA TOCAR');
         }
     }
 
     function sairDo360() {
         desativarModo360();
-        // Volta para a seleção de categorias da cidade atual
-        irPara('grupo-categorias'); 
+        irPara('grupo-categorias');
     }
 
-    // --- FUNÇÕES PLAYER PADRÃO (MANTIDAS) ---
-    function togglePlay() { /* ... igual ao anterior ... */ 
-       // Simplifiquei aqui só para não ficar gigante, use a lógica antiga se precisar do audio player também
-       const videoEl = document.getElementById('video-player');
-       if(videoEl.paused) videoEl.play(); else videoEl.pause();
-    }
-    
-    function restartMedia() {
-       const v = document.getElementById('video-player');
-       v.currentTime = 0; v.play();
+    /* --- UTILITARIOS --- */
+    function atualizarAmbiente(idGrupo) {
+        const ambiente = document.getElementById('ambiente-3d');
+        if(document.getElementById('videosphere').getAttribute('visible') == true) return;
+        ambiente.setAttribute('visible', 'true');
+        
+        let preset = 'forest';
+        if(idGrupo === 'grupo-cidades') preset = 'arches';
+        if(idGrupo === 'grupo-categorias') preset = 'volcano';
+        if(idGrupo === 'grupo-player') preset = 'starry';
+        
+        ambiente.setAttribute('environment', { preset: preset, grid: 'cross', playArea: 1 });
     }
 
     function pararTudo() {
@@ -234,49 +219,66 @@
       v.pause();
       if(audioNarracao) { audioNarracao.pause(); }
     }
-
   </script>
 </head>
 <body>
 
   <a-scene background="color: #111">
 
-    <a-entity id="ambiente-3d" environment="preset: forest; groundColor: #445; grid: cross"></a-entity>
-    
-    <a-videosphere id="videosphere" src="#video-player" visible="false" rotation="0 -90 0"></a-videosphere>
-
     <a-assets>
-       <video id="video-player" loop="true" crossorigin="anonymous" playsinline webkit-playsinline></video>
+       <video id="video-player" loop crossorigin="anonymous" playsinline webkit-playsinline></video>
     </a-assets>
 
-    <a-camera position="0 1.1 0">
-        <a-cursor
-          id="cursor" color="#FF0000" fuse="true" fuse-timeout="1500"
-          geometry="primitive: ring; radiusInner: 0.02; radiusOuter: 0.03"
-          raycaster="objects: .clickable; far: 20"
-          animation__fusing="property: scale; startEvents: fusing; easing: easeInCubic; dur: 1500; from: 1 1 1; to: 0.1 0.1 0.1"
-          animation__leave="property: scale; startEvents: mouseleave; to: 1 1 1; dur: 200">
-        </a-cursor>
+    <a-entity id="ambiente-3d" environment="preset: forest; groundColor: #445; grid: cross"></a-entity>
 
-        <a-entity id="hud-controles" position="0 -0.4 -1" visible="false">
-            
-            <a-entity position="-0.3 0 0">
-                <a-circle id="hud-btn-play" radius="0.1" color="green" class="interativo" onclick="togglePlay360()"></a-circle>
-                <a-text id="hud-txt-play" value="PLAY" align="center" position="0 -0.15 0" width="2"></a-text>
-            </a-entity>
+    <a-videosphere id="videosphere" src="#video-player" visible="false" rotation="0 -90 0"></a-videosphere>
 
-            <a-entity position="0.3 0 0">
-                <a-circle radius="0.1" color="#444" class="interativo" onclick="sairDo360()"></a-circle>
-                <a-text value="VOLTAR" align="center" position="0 -0.15 0" width="2"></a-text>
-            </a-entity>
-
-            <a-plane position="0 -0.05 0.05" width="1" height="0.4" color="black" opacity="0.5" rotation="0 0 0"></a-plane>
-        </a-entity>
-
+    <a-camera>
+       <a-cursor 
+         id="cursor"
+         color="yellow"
+         fuse="true" 
+         fuse-timeout="1500"
+         raycaster="objects: .clickable" 
+         animation__fusing="property: scale; startEvents: fusing; from: 1 1 1; to: 0.1 0.1 0.1; dur: 1500"
+         animation__mouseleave="property: scale; startEvents: mouseleave; to: 1 1 1; dur: 500">
+       </a-cursor>
     </a-camera>
 
+    <a-entity id="controle-360-gaze" visible="false" position="0 1.6 -2">
+        
+        <a-plane 
+          id="btnPlay360"
+          class="interativo" 
+          color="#EF2D5E" 
+          width="1.5" 
+          height="0.5" 
+          opacity="0.9"
+          onclick="togglePlay360()">
+           
+           <a-text 
+             id="btnText360" 
+             value="OLHE PARA TOCAR" 
+             align="center" 
+             width="4">
+           </a-text>
+        </a-plane>
+
+        <a-plane 
+            id="btnVoltar360"
+            class="interativo"
+            position="0 -0.6 0"
+            width="0.8" height="0.3"
+            color="#444"
+            onclick="sairDo360()">
+            <a-text value="SAIR" align="center" width="4"></a-text>
+        </a-plane>
+
+    </a-entity>
+
+
     <a-entity id="grupo-inicio" visible="true">
-        <a-text value="Amapa Interativo" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 3 -3" width="10" color="#000000"></a-text>
+        <a-text value="Amapa Interativo" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 3 -3" width="10" color="#000000"></a-text>     
         <a-plane position="0 1.6 -3" width="1.5" height="0.6" color="#004d40" class="clickable interativo" onclick="irPara('grupo-cidades')">
             <a-text value="INICIAR" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" width="6"></a-text>
         </a-plane>
@@ -308,14 +310,8 @@
     <a-entity id="grupo-player" visible="false">
         <a-plane position="0 1.5 -3" width="3" height="2.5" color="#111" opacity="0.95"></a-plane>
         <a-text id="vr-titulo" value="TITULO" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 2.5 -2.9" color="#FFD700" width="4"></a-text>
-        <a-video id="vr-video-screen" src="#video-player" width="2" height="1" position="0 1.8 -2.9" visible="false"></a-video>
         <a-image id="vr-imagem-screen" width="2" height="1" position="0 1.8 -2.9" visible="false"></a-image>
-        
-        <a-entity id="controles-media" position="0 1 -2.9" visible="false">
-            <a-circle id="btn-play-cor" radius="0.20" color="green" class="interativo" onclick="togglePlay()"></a-circle>
-        </a-entity>
-
-        <a-text id="vr-texto" value="Texto..." font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 0.4 -2.8" width="3.5"></a-text>
+        <a-entity id="controles-media" position="0 1 -2.9" visible="false"></a-entity>
         <a-plane position="0 0.15 -2.9" width="1" height="0.25" color="#444" class="interativo" onclick="irPara('grupo-categorias')">
             <a-text value="VOLTAR" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center"></a-text>
         </a-plane>
