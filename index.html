@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>Amapa Interativo: Menu em Arco</title>
+  <title>Amapa Interativo: Com Hinos</title>
   
   <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
   <script src="https://unpkg.com/aframe-environment-component@1.5.x/dist/aframe-environment-component.min.js"></script>
@@ -13,7 +13,9 @@
     const db = {
       'vitoria': {
         nome: 'Vitoria do Jari',
-        bandeira: './assets/bandeiras/vitoria.png', 
+        bandeira: './assets/imagens/bandeiras/vitoria.png',
+        // NOVO: CAMINHO DO HINO
+        hino: './assets/audios/vitoria.mp3', 
         conteudos: {
           'Historia': { t: 'Historia', video: './assets/videos/vitoria.mp4', tipo: 'video360' },
           'Cultura': { 
@@ -34,12 +36,13 @@
           }
         }
       },
-      'macapa': { nome: 'Macapa', bandeira: './assets/bandeiras/macapa.png', conteudos: {} },
-      'laranjal do jari': { nome: 'Laranjal do Jari', bandeira: './assets/bandeiras/laranjal.png', conteudos: {} },
-      'oiapoque': { nome: 'Oiapoque', bandeira: './assets/bandeiras/oiapoque.png', conteudos: {} },
-      'serra do navio': { nome: 'Serra do Navio', bandeira: './assets/bandeiras/serra.png', conteudos: {} },
-      'santana': { nome: 'Santana', bandeira: './assets/bandeiras/santana.jpg', conteudos: {} },
-      'amapa': { nome: 'Amapa', bandeira: './assets/bandeiras/amapa.jpg', conteudos: {} },
+      // Adicione a propriedade 'hino' nas outras cidades
+      'macapa': { nome: 'Macapa', bandeira: './assets/imagens/bandeiras/macapa.png', hino: './assets/audios/hino_macapa.mp3', conteudos: {} },
+      'laranjal do jari': { nome: 'Laranjal do Jari', bandeira: './assets/imagens/bandeiras/laranjal.png', conteudos: {} },
+      'oiapoque': { nome: 'Oiapoque', bandeira: './assets/imagens/bandeiras/oiapoque.png', conteudos: {} },
+      'serra do navio': { nome: 'Serra do Navio', bandeira: './assets/imagens/bandeiras/serra.png', conteudos: {} },
+      'santana': { nome: 'Santana', bandeira: './assets/imagens/bandeiras/santana.png', conteudos: {} },
+      'amapa': { nome: 'Amapa', bandeira: './assets/imagens/bandeiras/amapa.png', conteudos: {} },
     };
 
     let cidadeAtual = '';
@@ -50,33 +53,25 @@
       setupVideoEvents();
     };
 
-    /* --- NOVO MENU EM ARCO --- */
+    /* --- MENU EM ARCO (BANDEIRAS) --- */
     function gerarMenuCidades() {
       const container = document.getElementById('grade-cidades');
       const chaves = Object.keys(db);
       
-      // Definição das posições em arco para até 7 cidades
-      // X: Esquerda(-) / Direita(+)
-      // Y: Altura (1.6 é a altura dos olhos)
-      // Z: Profundidade (Quanto mais negativo, mais longe)
-      // Rot: Rotação Y para virar a imagem para o centro
       const posicoes = [
-          { pos: '-3.5 1.6 -1.5', rot: '0 60 0' }, // Extrema Esquerda
+          { pos: '-3.5 1.6 -1.5', rot: '0 60 0' }, 
           { pos: '-2.4 1.6 -2.5', rot: '0 40 0' },
           { pos: '-1.2 1.6 -3.2', rot: '0 20 0' },
-          { pos: '0 1.6 -3.5',    rot: '0 0 0' },   // Centro
+          { pos: '0 1.6 -3.5',    rot: '0 0 0' },   
           { pos: '1.2 1.6 -3.2',  rot: '0 -20 0' },
           { pos: '2.4 1.6 -2.5',  rot: '0 -40 0' },
-          { pos: '3.5 1.6 -1.5',  rot: '0 -60 0' }  // Extrema Direita
+          { pos: '3.5 1.6 -1.5',  rot: '0 -60 0' }  
       ];
 
       chaves.forEach((chave, index) => {
-        // Se tiver mais cidades que posições, para de gerar para não encavalar
         if(index >= posicoes.length) return;
-
         const cidade = db[chave];
         const p = posicoes[index];
-        
         const el = document.createElement('a-entity');
         el.setAttribute('position', p.pos);
         el.setAttribute('rotation', p.rot);
@@ -84,26 +79,13 @@
         const imagemSrc = cidade.bandeira ? `src="${cidade.bandeira}"` : 'color="#555"';
 
         el.innerHTML = `
-          <a-plane
-            ${imagemSrc}
-            width="1" height="0.7"
-            class="clicavel interativo"
-            onclick="selecionarCidade('${chave}')"
+          <a-plane ${imagemSrc} width="1" height="0.7" class="clicavel interativo" onclick="selecionarCidade('${chave}')"
             material="shader: flat; side: double"
             animation__scale="property: scale; to: 1.2 1.2 1.2; dur: 200; startEvents: mouseenter"
-            animation__out="property: scale; to: 1 1 1; dur: 200; startEvents: mouseleave"
-          >
+            animation__out="property: scale; to: 1 1 1; dur: 200; startEvents: mouseleave">
              <a-plane position="0 0 -0.01" width="1.05" height="0.75" color="#FFD700" material="shader: flat"></a-plane>
           </a-plane>
-
-          <a-text 
-            value="${cidade.nome}" 
-            font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" 
-            align="center" 
-            position="0 -0.6 0" 
-            width="4" 
-            color="#FFFFFF"
-            shader="msdf">
+          <a-text value="${cidade.nome}" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 -0.6 0" width="4" color="#FFFFFF" shader="msdf">
              <a-plane position="0 0 -0.01" width="2" height="0.3" color="black" opacity="0.6"></a-plane>
           </a-text>
         `;
@@ -111,64 +93,31 @@
       });
     }
 
-    /* --- GALERIAS (CULTURA E TURISMO) --- */
-    function montarGaleria(itens) {
-        const container = document.getElementById('container-molduras-cultura');
-        container.innerHTML = ''; 
-        const posicoes = [ { pos: '-2.2 1.6 -2.5', rot: '0 30 0' }, { pos: '-0.8 1.6 -3', rot: '0 10 0' }, { pos: '0.8 1.6 -3', rot: '0 -10 0' }, { pos: '2.2 1.6 -2.5', rot: '0 -30 0' } ];
-
-        itens.forEach((item, index) => {
-            if(index >= 4) return;
-            const p = posicoes[index];
-            const idTexto = `txt-galeria-${index}`;
-            const el = document.createElement('a-entity');
-            el.setAttribute('position', p.pos);
-            el.setAttribute('rotation', p.rot);
-            const srcAttr = item.img ? `src="${item.img}"` : 'color="#555"';
-            el.innerHTML = `
-                <a-plane ${srcAttr} width="1.2" height="0.9" class="clicavel interativo moldura-galeria" data-texto-id="${idTexto}" material="shader: flat; side: double"></a-plane>
-                <a-text id="${idTexto}" value="${item.txt}" visible="false" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 -0.6 0" width="2.5" color="#FFD700" shader="msdf">
-                     <a-plane position="0 0 -0.01" width="2.6" height="0.4" color="black" opacity="0.7"></a-plane>
-                </a-text>
-            `;
-            container.appendChild(el);
-        });
-        setupHoverEvents('.moldura-galeria', 'data-texto-id');
-    }
-
-    function montarGaleriaVideo(itens) {
-        const container = document.getElementById('container-molduras-turismo');
-        container.innerHTML = ''; 
-        const posicoes = [ { pos: '-2.2 1.6 -2.5', rot: '0 30 0' }, { pos: '-0.8 1.6 -3', rot: '0 10 0' }, { pos: '0.8 1.6 -3', rot: '0 -10 0' }, { pos: '2.2 1.6 -2.5', rot: '0 -30 0' } ];
-
-        itens.forEach((item, index) => {
-            if(index >= 4) return;
-            const p = posicoes[index];
-            const videoID = `vid-turismo-${index}`;
-            const videoEl = document.getElementById(videoID);
-            if(videoEl && item.video) { videoEl.setAttribute('src', item.video); videoEl.pause(); videoEl.currentTime = 0; }
-
-            const el = document.createElement('a-entity');
-            el.setAttribute('position', p.pos);
-            el.setAttribute('rotation', p.rot);
-            el.innerHTML = `
-                <a-plane src="#${videoID}" width="1.2" height="0.9" class="clicavel interativo video-moldura" data-vid-id="${videoID}" material="shader: flat; side: double" animation__scale="property: scale; to: 1.1 1.1 1.1; dur: 200; startEvents: mouseenter" animation__out="property: scale; to: 1 1 1; dur: 200; startEvents: mouseleave"></a-plane>
-                <a-text value="${item.txt}" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 -0.6 0" width="3" color="#FFF" shader="msdf"></a-text>
-            `;
-            container.appendChild(el);
-        });
+    /* --- LÓGICA DO HINO --- */
+    function tocarHino(cidadeKey) {
+        const hinoEl = document.getElementById('audio-hino');
+        const cidade = db[cidadeKey];
         
-        document.querySelectorAll('.video-moldura').forEach(m => {
-            m.addEventListener('mouseenter', function() { const v = document.getElementById(this.getAttribute('data-vid-id')); if(v) v.play(); });
-            m.addEventListener('mouseleave', function() { const v = document.getElementById(this.getAttribute('data-vid-id')); if(v) v.pause(); });
-        });
+        // 1. Para qualquer hino anterior
+        hinoEl.pause();
+        
+        // 2. Se a cidade tem hino, configura e toca
+        if (cidade && cidade.hino) {
+            hinoEl.src = cidade.hino;
+            hinoEl.volume = 0.2; // Volume baixo para ser fundo (0.0 a 1.0)
+            hinoEl.loop = true;  // Repetir se o hino acabar
+            
+            // Promise para evitar erros de autoplay do navegador
+            hinoEl.play().catch(error => {
+                console.log("Interação do usuário necessária para tocar áudio.");
+            });
+        }
     }
 
-    function setupHoverEvents(selector, dataAttr) {
-        document.querySelectorAll(selector).forEach(el => {
-            el.addEventListener('mouseenter', function() { document.getElementById(this.getAttribute(dataAttr)).setAttribute('visible', 'true'); this.setAttribute('scale', '1.1 1.1 1.1'); });
-            el.addEventListener('mouseleave', function() { document.getElementById(this.getAttribute(dataAttr)).setAttribute('visible', 'false'); this.setAttribute('scale', '1 1 1'); });
-        });
+    function pararHino() {
+        const hinoEl = document.getElementById('audio-hino');
+        hinoEl.pause();
+        hinoEl.currentTime = 0;
     }
 
     /* --- NAVEGAÇÃO --- */
@@ -182,30 +131,47 @@
 
       desativarModo360();
 
+      // Se voltar para o menu principal ou lista de cidades, para o hino
+      if (idGrupo === 'grupo-inicio' || idGrupo === 'grupo-cidades') {
+          pararHino();
+      }
+
       const destino = document.getElementById(idGrupo);
       destino.setAttribute('visible', 'true');
       destino.querySelectorAll('.interativo').forEach(b => b.classList.add('clicavel'));
       
       atualizarAmbiente(idGrupo);
-      if(idGrupo !== 'grupo-player') pararTudo();
+      
+      // Se não estiver no menu de categorias da cidade (onde o hino toca), para tudo.
+      if(idGrupo !== 'grupo-categorias') {
+          // Nota: O hino é controlado separadamente, aqui paramos videos e narracoes
+          pararMidiasConteudo(); 
+      }
     }
 
     function selecionarCidade(chave) {
       cidadeAtual = chave;
       document.getElementById('titulo-cidade-cat').setAttribute('value', db[chave].nome);
+      
+      // TOCA O HINO AO ENTRAR
+      tocarHino(chave);
+      
       irPara('grupo-categorias');
     }
 
     function verConteudo(tipo) {
       if(!db[cidadeAtual].conteudos[tipo]) return;
       const dados = db[cidadeAtual].conteudos[tipo];
-      pararTudo();
+      
+      // AO ENTRAR EM UM CONTEÚDO, PARAMOS O HINO PARA NÃO MISTURAR
+      pararHino(); 
+      pararMidiasConteudo();
 
       if (dados.tipo === 'video360') { ativarModo360(dados.video); return; }
       if (dados.type === 'galeria') { document.getElementById('titulo-galeria').setAttribute('value', dados.t); montarGaleria(dados.itens); irPara('grupo-cultura-galeria'); return; }
       if (dados.type === 'galeriaVideo') { document.getElementById('titulo-turismo').setAttribute('value', dados.t); montarGaleriaVideo(dados.itens); irPara('grupo-turismo-galeria'); return; }
 
-      // Player 2D Padrao
+      // Player 2D
       const controles = document.getElementById('controles-media');
       const tela = document.getElementById('vr-video-screen');
       const img = document.getElementById('vr-imagem-screen');
@@ -216,7 +182,52 @@
       irPara('grupo-player');
     }
 
-    /* --- VIDEO 360 & UTILITARIOS --- */
+    /* --- FUNÇÕES AUXILIARES (Video, Galeria, etc) --- */
+    function montarGaleria(itens) {
+        const container = document.getElementById('container-molduras-cultura');
+        container.innerHTML = ''; 
+        const posicoes = [ { pos: '-2.2 1.6 -2.5', rot: '0 30 0' }, { pos: '-0.8 1.6 -3', rot: '0 10 0' }, { pos: '0.8 1.6 -3', rot: '0 -10 0' }, { pos: '2.2 1.6 -2.5', rot: '0 -30 0' } ];
+        itens.forEach((item, index) => {
+            if(index >= 4) return;
+            const p = posicoes[index];
+            const idTexto = `txt-galeria-${index}`;
+            const el = document.createElement('a-entity');
+            el.setAttribute('position', p.pos); el.setAttribute('rotation', p.rot);
+            const srcAttr = item.img ? `src="${item.img}"` : 'color="#555"';
+            el.innerHTML = `<a-plane ${srcAttr} width="1.2" height="0.9" class="clicavel interativo moldura-galeria" data-texto-id="${idTexto}" material="shader: flat; side: double"></a-plane><a-text id="${idTexto}" value="${item.txt}" visible="false" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 -0.6 0" width="2.5" color="#FFD700" shader="msdf"><a-plane position="0 0 -0.01" width="2.6" height="0.4" color="black" opacity="0.7"></a-plane></a-text>`;
+            container.appendChild(el);
+        });
+        setupHoverEvents('.moldura-galeria', 'data-texto-id');
+    }
+
+    function montarGaleriaVideo(itens) {
+        const container = document.getElementById('container-molduras-turismo');
+        container.innerHTML = ''; 
+        const posicoes = [ { pos: '-2.2 1.6 -2.5', rot: '0 30 0' }, { pos: '-0.8 1.6 -3', rot: '0 10 0' }, { pos: '0.8 1.6 -3', rot: '0 -10 0' }, { pos: '2.2 1.6 -2.5', rot: '0 -30 0' } ];
+        itens.forEach((item, index) => {
+            if(index >= 4) return;
+            const p = posicoes[index];
+            const videoID = `vid-turismo-${index}`;
+            const videoEl = document.getElementById(videoID);
+            if(videoEl && item.video) { videoEl.setAttribute('src', item.video); videoEl.pause(); videoEl.currentTime = 0; }
+            const el = document.createElement('a-entity');
+            el.setAttribute('position', p.pos); el.setAttribute('rotation', p.rot);
+            el.innerHTML = `<a-plane src="#${videoID}" width="1.2" height="0.9" class="clicavel interativo video-moldura" data-vid-id="${videoID}" material="shader: flat; side: double" animation__scale="property: scale; to: 1.1 1.1 1.1; dur: 200; startEvents: mouseenter" animation__out="property: scale; to: 1 1 1; dur: 200; startEvents: mouseleave"></a-plane><a-text value="${item.txt}" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 -0.6 0" width="3" color="#FFF" shader="msdf"></a-text>`;
+            container.appendChild(el);
+        });
+        document.querySelectorAll('.video-moldura').forEach(m => {
+            m.addEventListener('mouseenter', function() { const v = document.getElementById(this.getAttribute('data-vid-id')); if(v) v.play(); });
+            m.addEventListener('mouseleave', function() { const v = document.getElementById(this.getAttribute('data-vid-id')); if(v) v.pause(); });
+        });
+    }
+
+    function setupHoverEvents(selector, dataAttr) {
+        document.querySelectorAll(selector).forEach(el => {
+            el.addEventListener('mouseenter', function() { document.getElementById(this.getAttribute(dataAttr)).setAttribute('visible', 'true'); this.setAttribute('scale', '1.1 1.1 1.1'); });
+            el.addEventListener('mouseleave', function() { document.getElementById(this.getAttribute(dataAttr)).setAttribute('visible', 'false'); this.setAttribute('scale', '1 1 1'); });
+        });
+    }
+
     function setupVideoEvents() {
         const video = document.getElementById('video-player');
         const loader = document.getElementById('loader-360');
@@ -244,7 +255,7 @@
     function desativarModo360() {
         const esfera = document.getElementById('videosphere');
         if (esfera.getAttribute('visible') == false) return; 
-        pararTudo();
+        pararMidiasConteudo();
         esfera.setAttribute('visible', 'false');
         document.getElementById('controle-360-gaze').setAttribute('visible', 'false');
         document.getElementById('loader-360').setAttribute('visible', 'false');
@@ -252,7 +263,19 @@
         document.getElementById('btnVoltar360').classList.remove('clicavel');
     }
     
-    function sairDo360() { desativarModo360(); irPara('grupo-categorias'); }
+    // ATENÇÃO: Ao clicar em voltar do 360, voltamos para categorias.
+    // Aqui decidimos se o hino volta a tocar. Para ficar suave, vamos reativar o hino.
+    function sairDo360() { 
+        desativarModo360(); 
+        irPara('grupo-categorias');
+        tocarHino(cidadeAtual); // REATIVA O HINO
+    }
+
+    // Mesma lógica para as galerias, ao voltar, reativa o hino
+    function voltarParaCategorias() {
+        irPara('grupo-categorias');
+        tocarHino(cidadeAtual);
+    }
 
     function atualizarAmbiente(idGrupo) {
         if(document.getElementById('videosphere').getAttribute('visible') == true) return;
@@ -265,11 +288,12 @@
         el.setAttribute('environment', { preset: preset, grid: 'cross', playArea: 1 });
     }
 
-    function pararTudo() {
+    function pararMidiasConteudo() {
       const v = document.getElementById('video-player'); v.pause();
       if(audioNarracao) { audioNarracao.pause(); }
       for(let i=0; i<4; i++) { const vid = document.getElementById(`vid-turismo-${i}`); if(vid) vid.pause(); }
     }
+    
     function togglePlay2D() { if(audioNarracao) { if(audioNarracao.paused) audioNarracao.play(); else audioNarracao.pause(); } }
   </script>
 </head>
@@ -282,6 +306,7 @@
        <video id="vid-turismo-1" loop crossorigin="anonymous" playsinline></video>
        <video id="vid-turismo-2" loop crossorigin="anonymous" playsinline></video>
        <video id="vid-turismo-3" loop crossorigin="anonymous" playsinline></video>
+       <audio id="audio-hino" loop></audio>
     </a-assets>
 
     <a-entity id="ambiente-3d"></a-entity>
@@ -316,9 +341,7 @@
 
     <a-entity id="grupo-cidades" visible="false">
         <a-text value="Escolha o Destino" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 3.5 -4" width="8" color="#FFF"></a-text>
-        
         <a-entity id="grade-cidades" position="0 0 0"></a-entity>
-
         <a-plane position="0 0.5 -3" width="1" height="0.4" color="#444" class="clicavel interativo" onclick="irPara('grupo-inicio')">
             <a-text value="VOLTAR" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center"></a-text>
         </a-plane>
@@ -343,7 +366,7 @@
     <a-entity id="grupo-cultura-galeria" visible="false">
         <a-text id="titulo-galeria" value="Galeria" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 3 -3" width="8" color="#FFD700"></a-text>
         <a-entity id="container-molduras-cultura"></a-entity>
-        <a-plane position="0 0.5 -3" width="1" height="0.3" color="#444" class="clicavel interativo" onclick="irPara('grupo-categorias')">
+        <a-plane position="0 0.5 -3" width="1" height="0.3" color="#444" class="clicavel interativo" onclick="voltarParaCategorias()">
             <a-text value="VOLTAR" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center"></a-text>
         </a-plane>
     </a-entity>
@@ -351,7 +374,7 @@
     <a-entity id="grupo-turismo-galeria" visible="false">
         <a-text id="titulo-turismo" value="Turismo" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 3 -3" width="8" color="#FFD700"></a-text>
         <a-entity id="container-molduras-turismo"></a-entity>
-        <a-plane position="0 0.5 -3" width="1" height="0.3" color="#444" class="clicavel interativo" onclick="irPara('grupo-categorias')">
+        <a-plane position="0 0.5 -3" width="1" height="0.3" color="#444" class="clicavel interativo" onclick="voltarParaCategorias()">
             <a-text value="VOLTAR" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center"></a-text>
         </a-plane>
     </a-entity>
@@ -364,7 +387,7 @@
              <a-circle radius="0.2" color="green" class="interativo" onclick="togglePlay2D()"></a-circle>
              <a-text value="PLAY AUDIO" position="-0.5 -0.3 0"></a-text>
         </a-entity>
-        <a-plane position="0 0.15 -2.9" width="1" height="0.25" color="#444" class="clicavel interativo" onclick="irPara('grupo-categorias')">
+        <a-plane position="0 0.15 -2.9" width="1" height="0.25" color="#444" class="clicavel interativo" onclick="voltarParaCategorias()">
             <a-text value="VOLTAR" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center"></a-text>
         </a-plane>
     </a-entity>
@@ -372,6 +395,3 @@
   </a-scene>
 </body>
 </html>
-
-
-
