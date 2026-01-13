@@ -14,7 +14,7 @@
       'vitoria': {
         nome: 'Vitoria do Jari',
         bandeira: './assets/bandeiras/vitoria.png',
-        hino: './assets/audios/vitoria.mp3', 
+        hino: './assets/hinos/vitoria.mp3', 
         conteudos: {
           'Historia': { t: 'Historia', video: './assets/videos/vitoria.mp4', tipo: 'video360' },
           'Cultura': { 
@@ -36,12 +36,12 @@
         }
       },
       // Adicione a propriedade 'hino' nas outras cidades
-      'macapa': { nome: 'Macapa', bandeira: './assets/bandeiras/macapa.png', hino: './assets/audios/hino_macapa.mp3', conteudos: {} },
-      'laranjal do jari': { nome: 'Laranjal do Jari', bandeira: './assets/bandeiras/laranjal.png', conteudos: {} },
-      'oiapoque': { nome: 'Oiapoque', bandeira: './assets/bandeiras/oiapoque.png', conteudos: {} },
-      'serra do navio': { nome: 'Serra do Navio', bandeira: './assets/bandeiras/serra.png', conteudos: {} },
-      'santana': { nome: 'Santana', bandeira: './assets/bandeiras/santana.jpg', conteudos: {} },
-      'amapa': { nome: 'Amapa', bandeira: './assets/bandeiras/amapa.jpg', conteudos: {} },
+      'macapa': { nome: 'Macapa', bandeira: './assets/bandeiras/macapa.png', hino: './assets/hinos/macapa.mp3', conteudos: {} },
+      'laranjal do jari': { nome: 'Laranjal do Jari', bandeira: './assets/bandeiras/laranjal.png', './assets/hinos/laranjal.mp3', conteudos: {} },
+      'oiapoque': { nome: 'Oiapoque', bandeira: './assets/bandeiras/oiapoque.png','./assets/hinos/oiapoque.mp3', conteudos: {} },
+      'serra do navio': { nome: 'Serra do Navio', bandeira: './assets/bandeiras/serra.png','./assets/hinos/serra.mp3', conteudos: {} },
+      'santana': { nome: 'Santana', bandeira: './assets/bandeiras/santana.jpg','./assets/hinos/santana.mp3', conteudos: {} },
+      'amapa': { nome: 'Amapa', bandeira: './assets/bandeiras/amapa.jpg','./assets/hinos/amapa.mp3' ,conteudos: {} },
     };
 
     let cidadeAtual = '';
@@ -312,7 +312,7 @@
         <a-text value="Amapa Interativo" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 3 -3" width="10" color="#000000"></a-text>     
         <a-text value="Explore, interaja e aprenda sobre cada município." font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 2.5 -3" width="5" color="#000000" ></a-text>
         
-        <a-image src="./assets/imagens/mapa.jpeg" position="-3 2 -4" rotation="0 20 0" width="2" height="1"></a-image>
+        <a-image src="./assets/imagens/mapa.png" position="-3 2 -4" rotation="0 20 0" width="1" height="2"></a-image>
         <a-image src="./assets/imagens/amapa.png" position="3 2 -4" rotation="0 -20 0" width="2" height="1"></a-image>
 
         <a-plane position="0 1.6 -3" width="1.5" height="0.6" color="#004d40" class="clicavel interativo" onclick="irPara('grupo-cidades')">
@@ -376,4 +376,5 @@
   </a-scene>
 </body>
 </html>
+
 
