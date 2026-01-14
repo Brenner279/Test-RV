@@ -131,7 +131,7 @@
 
     /* --- NAVEGAÇÃO --- */
     function irPara(idGrupo) {
-      const grupos = ['grupo-inicio', 'grupo-cidades', 'grupo-categorias', 'grupo-player', 'grupo-cultura-galeria', 'grupo-turismo-galeria'];
+      const grupos = ['grupo-inicio', 'grupo-cidades', 'grupo-categorias', 'grupo-player', 'grupo-cultura-galeria', 'grupo-opa-galeria'];
       grupos.forEach(g => {
         const el = document.getElementById(g);
         el.setAttribute('visible', 'false');
@@ -189,7 +189,7 @@
             const el = document.createElement('a-entity');
             el.setAttribute('position', p.pos); el.setAttribute('rotation', p.rot);
             const srcAttr = item.img ? `src="${item.img}"` : 'color="#555"';
-            el.innerHTML = `<a-plane ${srcAttr} width="1.2" height="0.9" class="clicavel interativo moldura-galeria" data-texto-id="${idTexto}" material="shader: flat; side: double"></a-plane><a-text id="${idTexto}" value="${item.txt}" visible="false" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 -0.6 0" width="2.5" color="#FFD700" shader="msdf"><a-plane position="0 0 -0.01" width="2.6" height="0.4" color="black" opacity="0.7"></a-plane></a-text>`;
+            el.innerHTML = `<a-plane ${srcAttr} width="1.2" height="0.9" class="clicavel interativo moldura-galeria" data-texto-id="${idTexto}" material="shader: flat; side: double"></a-plane><a-text id="${idTexto}" value="${item.txt}" visible="false" font="https://cdn.aframe.io/fonts/Roboto-msdf.json" align="center" position="0 -0.6 0" width="2.5" color="#FFD700" shader="msdf"><a-plane position="0 0 -0.01" width="2.6" height="0.4" color="black" opacity="0.7"></a-plane></a-text>`;
             container.appendChild(el);
         });
         setupHoverEvents('.moldura-galeria', 'data-texto-id');
@@ -207,7 +207,7 @@
             if(videoEl && item.video) { videoEl.setAttribute('src', item.video); videoEl.pause(); videoEl.currentTime = 0; }
             const el = document.createElement('a-entity');
             el.setAttribute('position', p.pos); el.setAttribute('rotation', p.rot);
-            el.innerHTML = `<a-plane src="#${videoID}" width="1.2" height="0.9" class="clicavel interativo video-moldura" data-vid-id="${videoID}" material="shader: flat; side: double" animation__scale="property: scale; to: 1.1 1.1 1.1; dur: 200; startEvents: mouseenter" animation__out="property: scale; to: 1 1 1; dur: 200; startEvents: mouseleave"></a-plane><a-text value="${item.txt}" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" align="center" position="0 -0.6 0" width="3" color="#FFF" shader="msdf"></a-text>`;
+            el.innerHTML = `<a-plane src="#${videoID}" width="1.2" height="0.9" class="clicavel interativo video-moldura" data-vid-id="${videoID}" material="shader: flat; side: double" animation__scale="property: scale; to: 1.1 1.1 1.1; dur: 200; startEvents: mouseenter" animation__out="property: scale; to: 1 1 1; dur: 200; startEvents: mouseleave"></a-plane><a-text value="${item.txt}" font="https://cdn.aframe.io/fonts/Roboto-msdf.json" align="center" position="0 -0.6 0" width="3" color="#FFF" shader="msdf"></a-text>`;
             container.appendChild(el);
         });
         document.querySelectorAll('.video-moldura').forEach(m => {
@@ -394,6 +394,7 @@
   </a-scene>
 </body>
 </html>
+
 
 
 
